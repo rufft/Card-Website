@@ -1497,6 +1497,7 @@
     "net7.0": [
       "Microsoft.AspNetCore.OpenApi >= 7.0.3",
       "Microsoft.EntityFrameworkCore >= 8.0.0-preview.1.23111.4",
+      "Microsoft.EntityFrameworkCore.Design >= 8.0.0-preview.1.23111.4",
       "Microsoft.EntityFrameworkCore.Tools >= 8.0.0-preview.1.23111.4",
       "Npgsql.EntityFrameworkCore.PostgreSQL >= 8.0.0-preview.1",
       "Swashbuckle.AspNetCore >= 6.4.0"
@@ -1547,6 +1548,12 @@
             "target": "Package",
             "version": "[8.0.0-preview.1.23111.4, )"
           },
+          "Microsoft.EntityFrameworkCore.Design": {
+            "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+            "suppressParent": "All",
+            "target": "Package",
+            "version": "[8.0.0-preview.1.23111.4, )"
+          },
           "Microsoft.EntityFrameworkCore.Tools": {
             "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
             "suppressParent": "All",
@@ -1581,7 +1588,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Users\\saaky\\.dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.201\\RuntimeIdentifierGraph.json"
       }
     }
   }

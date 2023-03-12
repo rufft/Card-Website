@@ -9,4 +9,5 @@ public class DatabaseContext : DbContext
     { }
 
     public DbSet<SimplePost> SimplePosts { get; set; }
+    public DbSet<Tag> Tags { get; set; }
 }
