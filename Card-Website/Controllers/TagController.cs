@@ -26,7 +26,7 @@ public class TagController : ControllerBase
     [HttpPost]
     //[Authorize(Roles = "admin")]
     [ActionName("add")]
-    public async Task AddTag(Tag tag) => await _tagsService.AddTagAsync(tag);
+    public async Task AddTag([FromForm] string tagName) => await _tagsService.AddTagAsync(tagName);
     
     [HttpDelete]
     //[Authorize(Roles = "admin")]

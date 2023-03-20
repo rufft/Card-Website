@@ -21,19 +21,18 @@ public class SimplePost
     public string PostContent { get; set; }
     
     [Column("image_links")]
-    public List<string>? ImageLinks { get; set; }
+    public List<ImageLink>? ImageLinks { get; set; }
     
     [Column("tags")]
-    public List<Tag> Tags { get; set; }
+    public List<Tag>? Tags { get; set; }
 
-    public SimplePost(string postName, string postContent, List<string>? imageLinks, List<Tag> tags)
+    public SimplePost(string postName, string postContent, List<Tag>? tags = null)
     {
         PostName = postName;
         PostContent = postContent;
-        ImageLinks = imageLinks;
         Tags = tags;
         CreationTime = DateTime.Now;
     }
     
-    private SimplePost() {}
+    public SimplePost() {}
 }

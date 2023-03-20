@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Card_Website.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230312152913_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230320182318_Fix1")]
+    partial class Fix1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,9 +56,6 @@ namespace Card_Website.Migrations
                     b.Property<string>("ParentTagTagId")
                         .HasColumnType("text");
 
-                    b.Property<string>("SimplePostPostId")
-                        .HasColumnType("text");
-
                     b.Property<string>("TagName")
                         .IsRequired()
                         .HasColumnType("text")
@@ -68,9 +65,22 @@ namespace Card_Website.Migrations
 
                     b.HasIndex("ParentTagTagId");
 
-                    b.HasIndex("SimplePostPostId");
-
                     b.ToTable("Tags");
+                });
+
+            modelBuilder.Entity("SimplePostTag", b =>
+                {
+                    b.Property<string>("PostsPostId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TagsTagId")
+                        .HasColumnType("text");
+
+                    b.HasKey("PostsPostId", "TagsTagId");
+
+                    b.HasIndex("TagsTagId");
+
+                    b.ToTable("PostTags", (string)null);
                 });
 
             modelBuilder.Entity("Card_Website.Models.Tag", b =>
@@ -79,16 +89,22 @@ namespace Card_Website.Migrations
                         .WithMany()
                         .HasForeignKey("ParentTagTagId");
 
-                    b.HasOne("Card_Website.Models.SimplePost", null)
-                        .WithMany("Tags")
-                        .HasForeignKey("SimplePostPostId");
-
                     b.Navigation("ParentTag");
                 });
 
-            modelBuilder.Entity("Card_Website.Models.SimplePost", b =>
+            modelBuilder.Entity("SimplePostTag", b =>
                 {
-                    b.Navigation("Tags");
+                    b.HasOne("Card_Website.Models.SimplePost", null)
+                        .WithMany()
+                        .HasForeignKey("PostsPostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Card_Website.Models.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("TagsTagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

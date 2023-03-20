@@ -6,14 +6,18 @@ namespace Card_Website.Services;
 
 public class PostService
 {
-    private DatabaseContext _database;
+    private readonly DatabaseContext _database;
 
-    private ImageFileLoaderService _imageFileLoader;
-    
-    public PostService(DatabaseContext database, ImageFileLoaderService imageFileLoader)
+    private readonly ImageManagerService _imageManager;
+    private TagsService _tagsService;
+
+    public string Name { get; set; }
+
+    public PostService(DatabaseContext database, ImageManagerService imageManager, TagsService tagsService)
     {
         _database = database;
-        _imageFileLoader = imageFileLoader;
+        _imageManager = imageManager;
+        _tagsService = tagsService;
     }
     
     public async Task<List<SimplePost>> GetPostsAsync()
@@ -26,16 +30,18 @@ public class PostService
         return await _database.SimplePosts.Include(post => post.Tags).SingleOrDefaultAsync(post => post.PostId == postId);
     }
     
-    public async Task AddPostAsync(SimplePost post, IEnumerable<IFormFile>? images)
+    public async Task AddPostAsync(PostResponse postResponse)
     {
+        var post = postResponse.ToPost();
+        if (postResponse.TagNames != null) post.Tags = await _tagsService.AddTagsAsync(postResponse.TagNames);
         var postEntity = await _database.SimplePosts.AddAsync(post);
         
-        if (images != null)
+        if (postResponse.Images != null)
         {
-            var paths = await _imageFileLoader.LoadImagesAsync(images, postEntity.Entity.PostId);
+            var paths = await _imageManager.LoadImagesAsync(postResponse.Images, postEntity.Entity.PostId);
             postEntity.Entity.ImageLinks = paths;
         }
-
+            
         await _database.SaveChangesAsync();
     }
     
@@ -45,11 +51,14 @@ public class PostService
         await _database.SaveChangesAsync();
     }
     
+
     public async Task DeletePostAsync(string postId)
     {
         var post = await GetPostAsync(postId);
         
         if (post == null) throw new NullReferenceException("DeletePost ERROR: Post not found");
+        
+        _imageManager.DeleteDirectoryAsync(postId);
         
         _database.SimplePosts.Remove(post);
         await _database.SaveChangesAsync();

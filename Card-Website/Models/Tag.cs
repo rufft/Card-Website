@@ -16,7 +16,11 @@ public class Tag
     
     [Column("tag_name")]
     public string TagName { get; set; }
-
+    
+    [Column("posts")]
+    public List<SimplePost> Posts { get; set; }
+    
+    
     public override string ToString()
     {
         StringBuilder sb = new();

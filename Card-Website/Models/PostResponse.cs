@@ -1,13 +1,18 @@
-﻿namespace Card_Website.Models;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class PostResponse
+namespace Card_Website.Models;
+
+public class PostResponse : IPostResponse
 {
-    public SimplePost Post { get; init; }
-    public IEnumerable<IFormFile>? Images { get; init; }
+    public List<IFormFile>? Images { get; set; }
 
-    public PostResponse(SimplePost post, IEnumerable<IFormFile>? images)
-    {
-        Post = post;
-        Images = images;
-    }
+    [Required]
+    public string PostName { get; init; }
+    
+    [Required]
+    public string PostContent { get; set; }
+    
+    public List<string>? TagNames { get; set; }
+
+    public SimplePost ToPost() => new SimplePost(PostName, PostContent);
 }

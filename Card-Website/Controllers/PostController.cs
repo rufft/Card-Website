@@ -12,7 +12,7 @@ namespace Card_Website.Controllers;
 public class PostController : ControllerBase
 {
     private PostService _postService;
-    
+
     public PostController(PostService postService)
     {
         _postService = postService;
@@ -20,25 +20,27 @@ public class PostController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<SimplePost>>> GetPosts() => await _postService.GetPostsAsync();
-    
+
     [HttpGet("{postId}")]
     public async Task<ActionResult<SimplePost?>> GetPost(string postId) => await _postService.GetPostAsync(postId);
-    
+
     [HttpPost]
     //[Authorize(Roles = "admin")]
     [ActionName("add")]
-    public async Task<ActionResult> AddPost(PostResponse response)
+    public async Task<ActionResult> AddPost([FromForm] PostResponse response)
     {
         try
         {
-            await _postService.AddPostAsync(response.Post, response.Images);
+            await _postService.AddPostAsync(response);
         }
         catch (Exception e)
         {
             return BadRequest(e.Message);
         }
+
         return Ok();
     }
+    
 
     [HttpPut]
     //[Authorize(Roles = "admin")]
@@ -57,7 +59,7 @@ public class PostController : ControllerBase
     }
 
     [HttpDelete("{postId}")]
-   //[Authorize(Roles = "admin")]
+    //[Authorize(Roles = "admin")]
     [ActionName("delete")]
     public async Task DeletePost(string postId) => await _postService.DeletePostAsync(postId);
 }
