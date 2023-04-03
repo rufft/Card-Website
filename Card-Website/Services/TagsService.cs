@@ -18,9 +18,20 @@ public class TagsService
         return await _database.Tags.ToListAsync();
     }
 
+    public Tag? GetTag(string tagId)
+    {
+        return _database.Tags
+            .ToList()
+            .FirstOrDefault(tag => tag.TagId == tagId);
+    }
+    
     public async Task<Tag?> GetTagAsync(string tagId)
     {
-        return await _database.Tags.SingleOrDefaultAsync(tag => tag.TagId == tagId);
+        var tag = await _database.Tags.FindAsync(tagId);
+        if (tag == null) return null;
+        if (tag.ParentTag == null) return tag;
+        tag.ParentTag = await GetTagAsync(tag.ParentTag.TagId);
+        return tag;
     }
     
     public async Task<Tag> AddTagAsync(string tagName)
@@ -70,7 +81,7 @@ public class TagsService
     
     public async Task DeleteTagAsync(string tagId)
     {
-        var tag = await GetTagAsync(tagId);
+        var tag = GetTag(tagId);
         
         if (tag == null) throw new NullReferenceException("DeleteTag ERROR: Tag not found");
         

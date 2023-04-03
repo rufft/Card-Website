@@ -32,13 +32,14 @@ public class PostService
     
     public async Task AddPostAsync(PostResponse postResponse)
     {
-        var post = postResponse.ToPost();
+        SimplePost post = postResponse;
+        
         if (postResponse.TagNames != null) post.Tags = await _tagsService.AddTagsAsync(postResponse.TagNames);
         var postEntity = await _database.SimplePosts.AddAsync(post);
         
         if (postResponse.Images != null)
         {
-            var paths = await _imageManager.LoadImagesAsync(postResponse.Images, postEntity.Entity.PostId);
+            var paths = await _imageManager.LoadImagesAsync(postResponse.Images, postEntity.Entity);
             postEntity.Entity.ImageLinks = paths;
         }
             
@@ -58,7 +59,7 @@ public class PostService
         
         if (post == null) throw new NullReferenceException("DeletePost ERROR: Post not found");
         
-        _imageManager.DeleteDirectoryAsync(postId);
+        _imageManager.DeletePostDirectoryAsync(postId);
         
         _database.SimplePosts.Remove(post);
         await _database.SaveChangesAsync();

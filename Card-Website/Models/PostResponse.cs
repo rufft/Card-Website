@@ -13,6 +13,7 @@ public class PostResponse : IPostResponse
     public string PostContent { get; set; }
     
     public List<string>? TagNames { get; set; }
+    public static implicit operator SimplePost(PostResponse response) => response.ToPost();
 
-    public SimplePost ToPost() => new SimplePost(PostName, PostContent);
+    private SimplePost ToPost() => new SimplePost(PostName, PostContent);
 }

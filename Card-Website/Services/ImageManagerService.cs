@@ -1,11 +1,19 @@
-﻿using Card_Website.Models;
+﻿using Card_Website.Context;
+using Card_Website.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Card_Website.Services;
 
 public class ImageManagerService
 {
+    private DatabaseContext _database;
     private const string ImageRootFolderPath = "Posts";
-    
+
+    public ImageManagerService(DatabaseContext database)
+    {
+        _database = database;
+    }
+
     public async Task<string?> LoadImageAsync(IFormFile file, string postId)
     {
         var extension = Path.GetExtension(file.FileName);
@@ -29,20 +37,19 @@ public class ImageManagerService
         return filePath;
     } 
     
-    public async Task<List<ImageLink>> LoadImagesAsync(IEnumerable<IFormFile> files, string postId)
+    public async Task<List<ImageLink>> LoadImagesAsync(IEnumerable<IFormFile> files, SimplePost post)
     {
         var filePaths = new List<ImageLink>();
         foreach (var file in files)
         {
-            var filePath = await LoadImageAsync(file, postId);
-            if (filePath != null) filePaths.Add(new(filePath));
+            var filePath = await LoadImageAsync(file, post.PostId);
+            if (filePath != null) filePaths.Add(new(filePath, post));
         }
         return filePaths;
     }
 
-    public void DeleteDirectoryAsync(string postId)
+    public void DeletePostDirectoryAsync(string postId)
     {
-        // delete directorty with images, get folder path from Posts/{postId}
         var directory = Path.Combine(ImageRootFolderPath, postId);
         Directory.Delete(directory, true);
     }

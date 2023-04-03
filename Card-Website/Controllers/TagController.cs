@@ -21,15 +21,15 @@ public class TagController : ControllerBase
     public async Task<ActionResult<IEnumerable<Tag>>> GetTags() => await _tagsService.GetTagsAsync();
     
     [HttpGet("{tagId}")]
-    public async Task<ActionResult<Tag?>> GetTag(string tagId) => await _tagsService.GetTagAsync(tagId);
+    public async Task<ActionResult<Tag?>> GetTag(string tagId) => _tagsService.GetTag(tagId);
     
     [HttpPost]
-    //[Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin")]
     [ActionName("add")]
     public async Task AddTag([FromForm] string tagName) => await _tagsService.AddTagAsync(tagName);
     
     [HttpDelete]
-    //[Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin")]
     [ActionName("delete")]
     public async Task DeleteTag(string tagId) => await _tagsService.DeleteTagAsync(tagId);
     

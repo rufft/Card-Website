@@ -7,9 +7,9 @@ namespace Card_Website.Models;
 
 public class ImageLink
 {
-    [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Column("image_link_id")]
+    [Key]
     public string ImageLinkId { get; init; }
     
     [Column("image_link")]
@@ -18,8 +18,14 @@ public class ImageLink
     
     public SimplePost Post { get; set; }
 
-    public ImageLink(string link)
+    public ImageLink(string link, SimplePost post)
     {
         Link = link;
+        Post = post;
+    }
+    
+    private ImageLink()
+    {
+        
     }
 }
